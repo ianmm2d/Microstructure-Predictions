@@ -15,8 +15,6 @@ def get_image_data(npy_dir: str) -> tuple[torch.Tensor, list]:
     """
     
     npy_files = sorted([f for f in os.listdir(npy_dir) if f.endswith('.npy')])
-    # Extracting file names to make sure y values can be matched later
-    npy_names = [os.path.splitext(f)[0] for f in npy_files]
 
     # Preload and stack all images
     images = np.stack([np.load(os.path.join(npy_dir, f)) for f in npy_files])
@@ -25,4 +23,4 @@ def get_image_data(npy_dir: str) -> tuple[torch.Tensor, list]:
     # Add channel dimension: (N, 1, H, W)
     images = np.expand_dims(images, axis=1)
     
-    return torch.tensor(images), npy_names
+    return torch.tensor(images), npy_files
