@@ -4,7 +4,6 @@ import torch
 import matplotlib.pyplot as plt
 from pipeline import DataPipeline
 from model import CNN
-import numpy as np
 
 def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer, epochs):
     """
@@ -63,7 +62,12 @@ model = CNN(input_channels)
 loss = torch.nn.MSELoss()
 lr = 1e-3
 optimizer = torch.optim.Adam(model.parameters(), lr)
-pipeline = DataPipeline(image_dir='./images', label_path='./labels.csv')
+image_dir = '../data/npy_images'
+label_path = '../data/properties/material_property.csv'
+batch_size = 32
+test_split = 0.1
+val_split = 0.1
+pipeline = DataPipeline(image_dir, label_path,batch_size, test_split, val_split)
 dataloaders = pipeline.load()
 train_loader = dataloaders['train']
 val_loader = dataloaders['val']
