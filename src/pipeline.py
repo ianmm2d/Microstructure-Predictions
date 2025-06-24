@@ -26,14 +26,14 @@ class DataPipeline:
         self.test_split = test_split
         self.val_split = val_split
 
-    def load(self):
+    def load(self) -> dict[str, DataLoader]:
         if not os.path.exists(self.image_dir):
             raise FileNotFoundError(f"Image directory not found: {self.image_dir}")
         if not os.path.exists(self.label_path):
             raise FileNotFoundError(f"Label file not found: {self.label_path}")
 
-        X = get_image_data(self.image_dir)
-        y = get_y_values(self.label_path)
+        X, filenames = get_image_data(self.image_dir)
+        y = get_y_values(self.label_path, filenames)
 
         X_temp, X_test, y_temp, y_test = train_test_split(
             X, 
