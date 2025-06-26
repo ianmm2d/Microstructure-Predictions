@@ -29,6 +29,7 @@ def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer, ep
         epoch_loss = 0.0
 
         for inputs, targets in train_loader:
+            targets = targets.view(-1,1)  # Flatten targets if necessary
             optimizer.zero_grad()
             outputs = model(inputs)
             loss = criterion(outputs, targets)
@@ -43,6 +44,7 @@ def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer, ep
         val_loss = 0.0
         with torch.no_grad():
             for inputs, targets in val_loader:
+                targets = targets.view(-1, 1)
                 outputs = model(inputs)
                 loss = criterion(outputs, targets)
                 val_loss += loss.item() * inputs.size(0)
@@ -56,12 +58,7 @@ def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer, ep
 torch.manual_seed(42)
 
 
-#Hyperparameters
-input_channels = 1
-model = CNN(input_channels)
-loss = torch.nn.MSELoss()
-lr = 1e-3
-optimizer = torch.optim.Adam(model.parameters(), lr)
+#Data loading and preprocessing
 image_dir = '../data/npy_images'
 label_path = '../data/properties/material_property.csv'
 batch_size = 32
@@ -72,8 +69,17 @@ dataloaders = pipeline.load()
 train_loader = dataloaders['train']
 val_loader = dataloaders['val']
 
+# Initialize the model, loss function, and optimizer
+sample_input, _ = next(iter(train_loader))
+_, c, h, w = sample_input.shape
+model = CNN(input_channels=c, input_height=h, input_width=h)  # fix width → w
+loss = torch.nn.MSELoss()
+lr = 1e-3
+optimizer = torch.optim.Adam(model.parameters(), lr)
+
 # Train the model
 train_losses, val_losses = train_and_evaluate(model, train_loader, val_loader, loss, optimizer, epochs=10)
+
 
 # Plot training and validation losses
 X_train_list = []
@@ -86,19 +92,28 @@ X_train = torch.cat(X_train_list, dim=0)
 y_train = torch.cat(y_train_list, dim=0)
 
 
-def plot_results(model, X, y):
+def plot_results(model, X, y,y_mean, y_std):
     model.eval()
     with torch.no_grad():
-        predictions_a = model(X.float()).squeeze().numpy()
+        predictions = model(X.float()).squeeze().numpy()
     y_np = y.numpy().squeeze()
 
-    plt.figure(figsize=(10,5))
+    predictions = predictions * y_std.item() + y_mean.item()
+    y_np = y_np * y_std.item() + y_mean.item()
+
+    plt.figure(figsize=(10, 5))
     plt.scatter(range(len(y_np)), y_np, label='Targets', alpha=0.7)
-    plt.scatter(range(len(predictions_a)), predictions_a, label='Predictions', alpha=0.7)
+    plt.scatter(range(len(predictions)), predictions, label='Predictions', alpha=0.7)
     plt.legend()
     plt.xlabel('Sample Index')
-    plt.ylabel('Value')
+    plt.ylabel('Young’s Modulus')
+    plt.title('Predicted vs Actual Young’s Modulus')
     plt.show()
 
-plot_results(model, X_train, y_train)
+model.eval()
+with torch.no_grad():
+    outputs = model(X_train[:10])
+    print("Sample predictions:\n", outputs.squeeze())
+    print("Corresponding targets:\n", y_train[:10].squeeze())
+plot_results(model, X_train, y_train, pipeline.y_mean, pipeline.y_std)
 
