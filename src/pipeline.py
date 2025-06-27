@@ -33,7 +33,7 @@ class DataPipeline:
             raise FileNotFoundError(f"Label file not found: {self.label_path}")
 
         X, filenames = get_image_data(self.image_dir)
-        y = get_y_values(self.label_path, filenames)
+        y = get_y_values(self.label_path, filenames).unsqueeze(1)
 
         X_temp, X_test, y_temp, y_test = train_test_split(
             X, 
@@ -50,9 +50,17 @@ class DataPipeline:
             random_state=42
         )
 
+        #Normalize Lables
+        self.y_mean = y_train.mean()
+        self.y_std = y_train.std()
+
+        y_train = ((y_train - self.y_mean) / self.y_std)
+        y_val = ((y_val - self.y_mean) / self.y_std)
+        y_test = ((y_test - self.y_mean) / self.y_std)
+
         return {
             'train': DataLoader(
-                TensorDataset(X_train, y_train), 
+                TensorDataset(X_train, y_train),    
                 batch_size=self.batch_size, 
                 shuffle=True
             ),
