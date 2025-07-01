@@ -2,9 +2,7 @@
 import torch
 import matplotlib.pyplot as plt
 
-# Defining seed for reproducibility
-torch.manual_seed(42)
-def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer, epochs, device=None):
+def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer, epochs, device=None, seed=42):
     """
     Train the model and evaluate on validation set after each epoch.
     
@@ -16,14 +14,15 @@ def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer, ep
         optimizer: Optimizer
         epochs: Number of epochs to train
         device: torch.device object (e.g., torch.device("cuda") or torch.device("cpu"))
+        seed: Int value for torch seed
     
     Returns:
         train_losses: List of average training loss per epoch
         val_losses: List of average validation loss per epoch
     """
-    if device is None:
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # Defining seed for reproducibility
+    torch.manual_seed(seed)
     model = model.to(device)
     train_losses = []
     val_losses = []
