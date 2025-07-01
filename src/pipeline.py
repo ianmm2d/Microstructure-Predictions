@@ -1,7 +1,7 @@
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader, TensorDataset
-from image_loader import get_image_data
-from targets_loader import get_y_values
+from .image_loader import get_image_data
+from .targets_loader import get_y_values
 import os
 
 class DataPipeline:
