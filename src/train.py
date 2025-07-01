@@ -1,11 +1,10 @@
 # Training the CNN model
-
 import torch
 import matplotlib.pyplot as plt
-from .pipeline import DataPipeline
-from .model import CNN
 
-def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer, epochs):
+# Defining seed for reproducibility
+torch.manual_seed(42)
+def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer, epochs, device=None):
     """
     Train the model and evaluate on validation set after each epoch.
     
@@ -16,20 +15,25 @@ def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer, ep
         criterion: Loss function
         optimizer: Optimizer
         epochs: Number of epochs to train
+        device: torch.device object (e.g., torch.device("cuda") or torch.device("cpu"))
     
     Returns:
         train_losses: List of average training loss per epoch
         val_losses: List of average validation loss per epoch
     """
+    if device is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    model = model.to(device)
     train_losses = []
     val_losses = []
-    torch.manual_seed(42)  # For reproducibility
 
     for epoch in range(epochs):
         model.train()
         epoch_loss = 0.0
 
         for inputs, targets in train_loader:
+            inputs, targets = inputs.to(device), targets.to(device)
             targets = targets.view(-1,1)  # Flatten targets if necessary
             optimizer.zero_grad()
             outputs = model(inputs)
@@ -45,6 +49,7 @@ def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer, ep
         val_loss = 0.0
         with torch.no_grad():
             for inputs, targets in val_loader:
+                inputs, targets = inputs.to(device), targets.to(device)
                 targets = targets.view(-1, 1)
                 outputs = model(inputs)
                 loss = criterion(outputs, targets)
