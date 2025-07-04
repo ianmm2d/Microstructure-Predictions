@@ -18,7 +18,7 @@ def get_image_data(npy_dir: str) -> tuple[torch.Tensor, list]:
 
     # Preload and stack all images
     images = np.stack([np.load(os.path.join(npy_dir, f)) for f in npy_files])
-    images = images.astype(np.float32) / 255.0  # Normalize
+    images = images.astype(np.float32)
     
     # Add channel dimension: (N, 1, H, W)
     images = np.expand_dims(images, axis=1)
