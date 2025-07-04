@@ -13,9 +13,7 @@ class CNN(nn.Module):
         self._get_conv_output_shape(input_height, input_width)
 
         self.fc1 = nn.Linear(self._to_linear, 128)
-        self.fc2 = nn.Linear(128, 32)
-        self.fc3 = nn.Linear(32, 16)
-        self.fc4 = nn.Linear(16, 1)
+        self.fc2 = nn.Linear(128, 1)
 
     def _get_conv_output_shape(self, height, width):
         with torch.no_grad():
@@ -34,6 +32,4 @@ class CNN(nn.Module):
         x = x.view(x.size(0), -1)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
-        x = self.fc3(x)
-        x = self.fc4(x)
         return x
