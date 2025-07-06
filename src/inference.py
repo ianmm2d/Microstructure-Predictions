@@ -18,16 +18,19 @@ def load_model(
     """
     model.to(device)
     # Load the state dictionary from the specified path
-    state_dict = torch.load(model_path)
+    model_dict = torch.load(model_path)
     # Load the weights into the model
-    model.load_state_dict(state_dict)
-    return model
+    model.load_state_dict(model_dict['model_state_dict'])
+    y_mean = model_dict['y_mean'].item()
+    y_std = model_dict['y_std'].item()
+    return model, y_mean, y_std
 
 def predict(
         model: torch.nn.Module, 
         dataloader: torch.utils.data.DataLoader, 
         device: torch.device, 
-        pipeline: object
+        y_mean: float,
+        y_std: float,
     ) -> tuple[np.ndarray, np.ndarray]:
     """
     Make predictions using the provided model and dataloader.
@@ -40,6 +43,7 @@ def predict(
         tuple[np.ndarray, np.ndarray]: Tuple containing predictions and targets.
     """
     model.eval()
+    model.to(device)
     all_preds, all_targets = [], []
     with torch.no_grad():
         for X, y in dataloader:
@@ -55,8 +59,8 @@ def predict(
         preds = preds.reshape(-1, 1)
     if targets.ndim == 1:
         targets = targets.reshape(-1, 1)
-    preds = preds * pipeline.y_std.item() + pipeline.y_mean.item()
-    targets = targets * pipeline.y_std.item() + pipeline.y_mean.item()
+    preds = preds * y_std + y_mean
+    targets = targets * y_std + y_mean
 
     return preds, targets
 
