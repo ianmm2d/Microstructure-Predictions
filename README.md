@@ -1,30 +1,35 @@
+```markdown
 # 🧠 Microstructure-Predictions
 
 This repository contains the code and resources for predicting the effective Young’s modulus (`E_eff`) of binary microstructure images using a convolutional neural network (CNN).
 
 ## 📂 Repository Structure
 
+```
+
 .
 ├── data/
-│   ├── models/
-│   ├── npy_images/
-│   └── properties/
-│       └── material_property.csv
+│   ├── models/                  # Saved model weights (.pth files)
+│   ├── npy\_images/              # Binary microstructure images (.npy)
+│   └── properties/              # Target values and metadata
+│       └── material\_property.csv
 ├── notebooks/
-│   ├── run_tests.ipynb
-│   └── train_colab.ipynb
-├── src/
-│   ├── image_loader.py
-│   ├── inference.py
-│   ├── model.py
-│   ├── pipeline.py
-│   ├── targets_loader.py
-│   └── train.py
-├── .gitignore
+│   ├── run\_tests.ipynb          # Notebook for inference and testing
+│   └── train\_colab.ipynb        # Optional training notebook (for Colab)
+├── src/                         # Source code
+│   ├── image\_loader.py          # Loads .npy images into PyTorch tensors
+│   ├── inference.py             # Inference logic (model loading + prediction)
+│   ├── model.py                 # CNN model architecture
+│   ├── pipeline.py              # Full preprocessing and inference pipeline
+│   ├── targets\_loader.py        # Loads and aligns target values
+│   └── train.py                 # Training routine (not used in final notebook)
+├── train\_model.ipynb            # Main training notebook
+├── requirements.txt             # Python dependencies
 ├── README.md
-├── requirements.txt
-└── train_model.ipynb
+└── .gitignore
 
+```
+```
 
 ## 📊 Problem Overview
 
