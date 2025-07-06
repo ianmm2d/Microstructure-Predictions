@@ -1,8 +1,9 @@
 # 🧠 Microstructure-Predictions
 
-This repository contains the code and resources for predicting the effective Young’s modulus (\(E_{\text{eff}}\)) of binary microstructure images using a convolutional neural network (CNN). The
+This repository contains the code and resources for predicting the effective Young’s modulus (`E_eff`) of binary microstructure images using a convolutional neural network (CNN).
 
 ## 📂 Repository Structure
+
 .
 ├── data/
 │   ├── models/
@@ -23,6 +24,7 @@ This repository contains the code and resources for predicting the effective You
 ├── README.md
 ├── requirements.txt
 └── train_model.ipynb
+
 
 ## 📊 Problem Overview
 
@@ -70,10 +72,6 @@ The dataset was split into:
 * 8% Training
 * 2% Validation
 * 90% Testing
-
-### 📉 Training & Validation Loss
-
-![Training and Validation Loss](figures/Train_Val_Loss_Curve.png)
 
 ### 📊 Prediction Accuracy
 
