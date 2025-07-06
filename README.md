@@ -1,39 +1,10 @@
-```markdown
 # 🧠 Microstructure-Predictions
 
-This repository contains the code and resources for predicting the effective Young’s modulus (`E_eff`) of binary microstructure images using a convolutional neural network (CNN).
-
-## 📂 Repository Structure
-
-```
-
-.
-├── data/
-│   ├── models/                  # Saved model weights (.pth files)
-│   ├── npy\_images/              # Binary microstructure images (.npy)
-│   └── properties/              # Target values and metadata
-│       └── material\_property.csv
-├── notebooks/
-│   ├── run\_tests.ipynb          # Notebook for inference and testing
-│   └── train\_colab.ipynb        # Optional training notebook (for Colab)
-├── src/                         # Source code
-│   ├── image\_loader.py          # Loads .npy images into PyTorch tensors
-│   ├── inference.py             # Inference logic (model loading + prediction)
-│   ├── model.py                 # CNN model architecture
-│   ├── pipeline.py              # Full preprocessing and inference pipeline
-│   ├── targets\_loader.py        # Loads and aligns target values
-│   └── train.py                 # Training routine (not used in final notebook)
-├── train\_model.ipynb            # Main training notebook
-├── requirements.txt             # Python dependencies
-├── README.md
-└── .gitignore
-
-```
-```
+This repository contains the code and resources for predicting the effective Young’s modulus ($E_{\text{eff}}$) of binary microstructure images using a convolutional neural network (CNN).
 
 ## 📊 Problem Overview
 
-The task is to train a neural network model to predict effective Young's modulus values from microstructure images. These images represent binary composites, and the regression target (\(E_{\text{eff}}\)) is a scalar in units of Pa.
+The task is to train a neural network model to predict effective Young's modulus values from microstructure images. These images represent binary composites, and the regression target ($E_{\text{eff}}$) is a scalar in units of Pa.
 
 ## 🛠️ Getting Started
 
@@ -77,6 +48,8 @@ The dataset was split into:
 * 8% Training
 * 2% Validation
 * 90% Testing
+
+To promote generalization and reduce model dependency on the dataset, only 10% of the available data was used for training (8% for training and 2% for validation), while 90% was held out for testing. This deliberate constraint was part of the evaluation criteria in the academic assignment, emphasizing the model's ability to learn effectively from limited data—a valuable trait in real-world scenarios where large labeled datasets may not be available.
 
 ### 📊 Prediction Accuracy
 
